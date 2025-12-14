@@ -9,7 +9,7 @@ import {
   deleteImagem,
   updateImagemStatus,
 } from "../repositories/ImagemRepository";
-import cloudinary from "../../cloudinaryConfig"; // Cloudinary SDK para upload
+import cloudinary from "../config/cloudinaryConfig"; // Cloudinary SDK para upload
 import { findColaboracaoById } from "../repositories/ColaboracaoRepository";
 
 export class ImagemController {

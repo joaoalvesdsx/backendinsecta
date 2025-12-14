@@ -1,7 +1,7 @@
 import { AppDataSource } from "../ormconfig";
 import { Colaboracao } from "../entities/Colaboracao";
 import { userRepository } from "./UserRepository";
-import cloudinary from "../../cloudinaryConfig";
+import cloudinary from "../config/cloudinaryConfig";
 
 // Helper: aceita DMS (ex: 11°31’5.02”S) ou decimal e retorna string decimal com 6 casas ou null
 function dmsToDecimal(input: any): string | null {
