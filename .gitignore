@@ -1,0 +1,32 @@
+# Node modules
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Diretórios e arquivos temporários
+dist/
+build/
+
+/package-lock.json
+
+# Arquivos de configuração de IDEs e editores
+.vscode/
+.idea/
+
+# TypeScript
+*.tsbuildinfo
+
+# Dependências de ambiente (exemplo com dotenv)
+.env
+
+# Arquivos do sistema operacional (exemplo para macOS)
+.DS_Store
+
+# Arquivos do sistema operacional (exemplo para Windows)
+Thumbs.db
+
