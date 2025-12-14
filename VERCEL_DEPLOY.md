@@ -3,6 +3,7 @@
 ## Passo 1: Preparar o Projeto
 
 O projeto já está configurado com os arquivos necessários:
+
 - `vercel.json` - Configuração do Vercel
 - `.vercelignore` - Arquivos a serem ignorados
 - `api/index.ts` - Entry point para o Vercel
@@ -52,6 +53,7 @@ EMAIL_PASS=sua_senha_app
 ```
 
 5. Em "Build & Development Settings":
+
    - **Framework Preset**: Other
    - **Build Command**: `npm run build` (ou deixe vazio)
    - **Output Directory**: dist (ou deixe vazio)
@@ -102,14 +104,17 @@ curl https://seu-projeto.vercel.app/api/auth/login -X POST \
 ## Solução de Problemas
 
 ### Erro de CORS
+
 Certifique-se de que a variável `FRONTEND_URL` está configurada corretamente.
 
 ### Erro de Banco de Dados
+
 - Verifique se as credenciais estão corretas
 - Certifique-se de que o banco permite conexões externas
 - Use SSL se necessário (PlanetScale requer SSL)
 
 ### Timeout
+
 Vercel tem um limite de 10 segundos para funções serverless (plano gratuito).
 Se suas operações demoram muito, considere otimizar queries ou usar plano pago.
 
