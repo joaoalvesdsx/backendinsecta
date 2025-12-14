@@ -83,8 +83,10 @@ export function generateTokenJWT(user: {
     nome_completo: user.nome_completo,
   };
 
-  const secret = process.env.JWT_SECRET as string;
-  const options = { expiresIn: "8h" };
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error("JWT_SECRET não está configurado");
+  }
 
-  return jwt.sign(payload, secret, options);
+  return jwt.sign(payload, secret, { expiresIn: "8h" } as jwt.SignOptions);
 }
