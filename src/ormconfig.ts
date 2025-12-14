@@ -1,7 +1,10 @@
 import { DataSource } from "typeorm";
 import dotenv from "dotenv";
+import path from "path";
 
 dotenv.config();
+
+const ext = process.env.NODE_ENV === "production" ? "js" : "ts";
 
 export const AppDataSource = new DataSource({
   type: "mysql",
@@ -10,6 +13,6 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
-  entities: ["src/entities/**/*.ts"],
-  synchronize: true, // Alterar quando for pra prod
+  entities: [path.join(__dirname, `entities/**/*.${ext}`)],
+  synchronize: process.env.NODE_ENV !== "production", // Desativar em produção
 });
