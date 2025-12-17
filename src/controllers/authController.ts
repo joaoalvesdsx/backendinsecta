@@ -11,24 +11,36 @@ import { v4 as uuidv4 } from "uuid";
 export class AuthController {
   async login(req: Request, res: Response) {
     const { email, senha } = req.body;
-    console.log('[AuthController] login - recebido login request for email:', email);
+    console.log(
+      "[AuthController] login - recebido login request for email:",
+      email
+    );
     try {
       // Verificar se os campos necessários foram fornecidos
       if (!email || !senha) {
-        console.log('[AuthController] login - faltando email ou senha');
+        console.log("[AuthController] login - faltando email ou senha");
         return res
           .status(400)
           .json({ message: "E-mail e senha são obrigatórios." });
       }
 
       // Autenticar o usuário
-      console.log('[AuthController] login - chamando authenticateUser');
+      console.log("[AuthController] login - chamando authenticateUser");
       const user = await authenticateUser(email, senha);
-      console.log('[AuthController] login - authenticateUser retornou user_id:', user?.user_id, 'ativo:', user?.ativo, 'tipo:', user?.tipo);
+      console.log(
+        "[AuthController] login - authenticateUser retornou user_id:",
+        user?.user_id,
+        "ativo:",
+        user?.ativo,
+        "tipo:",
+        user?.tipo
+      );
 
       // Garantir que o user_id esteja definido
       if (!user.user_id) {
-        console.log('[AuthController] login - user_id indefinido no usuário retornado');
+        console.log(
+          "[AuthController] login - user_id indefinido no usuário retornado"
+        );
         return res
           .status(500)
           .json({ message: "Erro interno: ID do usuário não encontrado." });
@@ -36,7 +48,10 @@ export class AuthController {
 
       //  Verificar se o e-mail foi confirmado
       if (!user.ativo) {
-        console.log('[AuthController] login - tentativa de login com conta não verificada. user_id:', user.user_id);
+        console.log(
+          "[AuthController] login - tentativa de login com conta não verificada. user_id:",
+          user.user_id
+        );
         return res.status(403).json({
           message:
             "Conta não verificada. Verifique seu e-mail antes de fazer login.",
@@ -50,16 +65,22 @@ export class AuthController {
         nome_completo: user.nome_completo,
       };
 
-      console.log('[AuthController] login - preparando token para user_id:', user.user_id);
+      console.log(
+        "[AuthController] login - preparando token para user_id:",
+        user.user_id
+      );
       // Gerar o token JWT
       // Passar o objeto user completo (sem senha) para que todos os campos entrem no JWT
       const token = generateTokenJWT(user);
 
-      console.log('[AuthController] login - token gerado para user_id:', user.user_id);
+      console.log(
+        "[AuthController] login - token gerado para user_id:",
+        user.user_id
+      );
       // Retornar o token para o cliente
       res.json({ message: "Login bem-sucedido", token, user: userPayload });
     } catch (error) {
-      console.error('[AuthController] login - erro ao autenticar:', error);
+      console.error("[AuthController] login - erro ao autenticar:", error);
       res.status(500).json({ message: "Erro ao fazer login" });
     }
   }
@@ -86,13 +107,17 @@ export class AuthController {
       // Criar o link para redefinição de senha
       const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
       console.log(resetLink);
-      // Enviar e-mail de recuperação de senha
-      const emailService = new EmailService();
-      await emailService.sendPasswordResetEmail(email, resetLink);
 
+      // Responder ao cliente IMEDIATAMENTE
       res
         .status(200)
         .json({ message: "E-mail de recuperação enviado com sucesso." });
+
+      // Enviar e-mail de recuperação de senha em background (sem await)
+      const emailService = new EmailService();
+      emailService.sendPasswordResetEmail(email, resetLink).catch((error) => {
+        console.error("Erro ao enviar e-mail de recuperação:", error);
+      });
     } catch (error) {
       console.error(error);
       res
