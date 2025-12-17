@@ -46,17 +46,17 @@ export class AuthController {
           .json({ message: "Erro interno: ID do usuário não encontrado." });
       }
 
-      //  Verificar se o e-mail foi confirmado
-      if (!user.ativo) {
-        console.log(
-          "[AuthController] login - tentativa de login com conta não verificada. user_id:",
-          user.user_id
-        );
-        return res.status(403).json({
-          message:
-            "Conta não verificada. Verifique seu e-mail antes de fazer login.",
-        });
-      }
+      //  Verificar se o e-mail foi confirmado (TEMPORARIAMENTE DESABILITADO)
+      // if (!user.ativo) {
+      //   console.log(
+      //     "[AuthController] login - tentativa de login com conta não verificada. user_id:",
+      //     user.user_id
+      //   );
+      //   return res.status(403).json({
+      //     message:
+      //       "Conta não verificada. Verifique seu e-mail antes de fazer login.",
+      //   });
+      // }
 
       const userPayload = {
         user_id: user.user_id,
@@ -184,9 +184,9 @@ export class AuthController {
       telefone,
       email,
       senha,
-      ativo: false,
-      email_verification_token: uuidv4(),
-      email_verification_expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+      ativo: true, // TEMPORARIAMENTE: ativando contas automaticamente
+      // email_verification_token: uuidv4(),
+      // email_verification_expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
     };
 
     try {
@@ -202,21 +202,20 @@ export class AuthController {
         return res.status(400).json({ message: "E-mail já está em uso." });
       }
 
-      // Criação do usuário com token de verificação
+      // Criação do usuário (TEMPORARIAMENTE sem verificação de email)
       const newUser = await createUser(userData);
 
       await userRepository.save(newUser);
 
-      // Enviar e-mail de verificação
-      const emailService = new EmailService();
-      await emailService.sendVerificationEmail(
-        email,
-        newUser.email_verification_token
-      );
+      // TEMPORARIAMENTE DESABILITADO: Enviar e-mail de verificação
+      // const emailService = new EmailService();
+      // await emailService.sendVerificationEmail(
+      //   email,
+      //   newUser.email_verification_token
+      // );
 
       return res.status(201).json({
-        message:
-          "Usuário criado com sucesso. Verifique seu e-mail para ativar a conta.",
+        message: "Usuário criado com sucesso! Você já pode fazer login.",
       });
     } catch (error) {
       console.error(error);
